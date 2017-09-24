@@ -1,4 +1,4 @@
-// tiny wrapper with default env vars
+// Tiny wrapper with default env variables.
 module.exports = {
   NODE_ENV: process.env.NODE_ENV || 'development',
   PORT: process.env.PORT || 3000

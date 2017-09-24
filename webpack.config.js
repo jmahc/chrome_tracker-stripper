@@ -1,42 +1,38 @@
 var fileSystem = require('fs')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 var path = require('path')
-var WriteFilePlugin = require('write-file-webpack-plugin')
 var webpack = require('webpack')
+var WriteFilePlugin = require('write-file-webpack-plugin')
 
-var env = require('./utils/env')
+var env = require('./utils').env
+var fileExtensions = require('./config').fileExtensions
+var htmlMinifyOptions = require('./config').htmlMinifyOptions
+var resolvePath = require('./utils').resolvePath
 
-// load the secrets
-var alias = {}
-
-var secretsPath = path.join(__dirname, 'secrets.' + env.NODE_ENV + '.js')
-
-function resolvePath(myPath) {
-  return path.resolve(__dirname, myPath)
+// The curret application directory.
+var applicationDirectory = resolvePath('src')
+// Establish the src alias and prepare to load the secrets.
+var alias = {
+  // Set our alias references for more explicit imports.
+  '@': applicationDirectory
 }
-
-var fileExtensions = [
-  'jpg',
-  'jpeg',
-  'png',
-  'gif',
-  'eot',
-  'otf',
-  'svg',
-  'ttf',
-  'woff',
-  'woff2'
-]
-
+// Grab the path to the secrets (if they exist).
+var secretsPath = resolvePath('secrets.' + env.NODE_ENV + '.js')
+// Create a webpack alias to more easily reference the secrets.
 if (fileSystem.existsSync(secretsPath)) {
   alias['secrets'] = secretsPath
 }
 
-var options = {
+module.exports = {
+  context: applicationDirectory,
+  devtool:
+    env.NODE_ENV === 'development'
+      ? 'cheap-module-eval-source-map'
+      : 'source-map',
   entry: {
-    popup: resolvePath('./src/js/popup.js'),
-    options: resolvePath('./src/js/options.js'),
-    background: resolvePath('./src/js/background.js')
+    background: resolvePath('src/js/background.js'),
+    options: resolvePath('src/js/options.js'),
+    popup: resolvePath('src/js/popup.js')
   },
   output: {
     path: path.join(__dirname, 'build'),
@@ -45,19 +41,34 @@ var options = {
   module: {
     rules: [
       {
-        test: /\.css$/,
-        loader: 'style-loader!css-loader',
-        exclude: /node_modules/
+        test: regex.css,
+        exclude: regex.nodeModules,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 0
+            }
+          }
+        ]
       },
       {
-        test: new RegExp('.(' + fileExtensions.join('|') + ')$'),
-        loader: 'file-loader?name=[name].[ext]',
-        exclude: /node_modules/
+        test: regex.files,
+        exclude: regex.npm,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]'
+            }
+          }
+        ]
       },
       {
-        test: /\.html$/,
-        loader: 'html-loader',
-        exclude: /node_modules/
+        test: regex.html,
+        exclude: regex.pkg,
+        use: ['html-loader']
       }
     ]
   },
@@ -65,31 +76,33 @@ var options = {
     alias: alias
   },
   plugins: [
-    // expose and write the allowed env vars on the compiled bundle
+    // Expose and write the allowed env vars within the compiled bundle.
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV)
     }),
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, 'src', 'popup.html'),
+      chunks: ['popup'],
       filename: 'popup.html',
-      chunks: ['popup']
+      minify: htmlMinifyOptions,
+      template: resolvePath('public/popup.html'),
+      title: 'Tracker Stripper - Popup'
     }),
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, 'src', 'options.html'),
+      chunks: ['options'],
       filename: 'options.html',
-      chunks: ['options']
+      minify: htmlMinifyOptions,
+      template: resolvePath('public/options.html'),
+      title: 'Tracker Stripper - Options'
     }),
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, 'src', 'background.html'),
+      chunks: ['background'],
       filename: 'background.html',
-      chunks: ['background']
+      minify: htmlMinifyOptions,
+      template: resolvePath('public/background.html'),
+      title: 'Tracker Stripper - Background'
     }),
     new WriteFilePlugin()
   ]
 }
 
-if (env.NODE_ENV === 'development') {
-  options.devtool = 'cheap-module-eval-source-map'
-}
-
-module.exports = options
+// module.exports = options

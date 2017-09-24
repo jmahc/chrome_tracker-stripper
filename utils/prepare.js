@@ -1,7 +1,9 @@
-var fileSystem = require("fs-extra"),
-    path = require("path");
+var fileSystem = require('fs-extra')
+var path = require('path')
 
-// clean de dist folder
-fileSystem.emptyDirSync(path.join(__dirname, "../build"));
+var resolvePath = require('./resolvePath')
 
-require("./generate_manifest");
+// Clean the dist folder
+fileSystem.emptyDirSync(resolvePath('build'))
+
+require('./generate_manifest')
