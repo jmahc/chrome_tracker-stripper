@@ -1,0 +1,25 @@
+{
+  "name": "tracker-stripper",
+  "version": "0.1.0",
+  "description": "Right-clicking torrent links will remove any trackers appended to the magnet link.",
+  "scripts": {
+    "build": "node utils/build.js",
+    "start": "node utils/webserver.js"
+  },
+  "dependencies": {
+    "css-loader": "^0.28.7",
+    "file-loader": "^0.11.2",
+    "fs-extra": "^4.0.2",
+    "html-loader": "^0.5.1",
+    "html-webpack-plugin": "^2.30.1",
+    "style-loader": "^0.18.2",
+    "webpack": "^3.6.0",
+    "webpack-dev-server": "^2.8.2",
+    "write-file-webpack-plugin": "^4.1.0"
+  },
+  "author": {
+    "name": "Jordan McArdle",
+    "email": "jordanmcardle@gmail.com",
+    "url": "http://mcardle.tech"
+  }
+}
