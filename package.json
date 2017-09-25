@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "description": "Right-clicking torrent links will remove any trackers appended to the magnet link.",
   "scripts": {
-    "build": "node utils/build.js",
-    "start": "node utils/webserver.js"
+    "build": "rm -rf build/ && node utils/build.js",
+    "clean": "rm -rf node_modules/ build/ yarn.lock && yarn",
+    "start": "rm -rf build/ && node utils/webserver.js"
   },
   "dependencies": {
     "css-loader": "^0.28.7",

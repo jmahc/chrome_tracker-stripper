@@ -4,6 +4,7 @@ var path = require('path')
 
 var env = require('./env')
 var resolvePath = require('./resolvePath')
+
 var config = require('../webpack.config')
 
 require('./prepare')

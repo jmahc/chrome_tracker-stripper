@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   collapseWhitespace: true,
   keepClosingSlash: true,
   minifyCSS: true,

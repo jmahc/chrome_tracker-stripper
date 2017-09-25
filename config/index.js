@@ -1,9 +1,6 @@
-var fileExtensions = require('./file_extensions')
-var htmlMinifyOptions = require('./html_minify_options')
-var regex = require('./regex')
-
-export {
-  fileExtensions,
-  htmlMinifyOptions,
-  regex
+module.exports = {
+  alias: require('./alias.js'),
+  htmlMinifyOptions: require('./html_minify_options.js'),
+  regex: require('./regex.js'),
+  stats: require('./stats.js')
 }

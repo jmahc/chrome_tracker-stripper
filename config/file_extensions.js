@@ -1,4 +1,4 @@
-const fileExtensions = [
+module.exports = [
   'jpg',
   'jpeg',
   'png',
@@ -10,5 +10,3 @@ const fileExtensions = [
   'woff',
   'woff2'
 ]
-
-export default fileExtensions

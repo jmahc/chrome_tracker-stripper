@@ -1,47 +1,35 @@
-var fileSystem = require('fs')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 var path = require('path')
 var webpack = require('webpack')
 var WriteFilePlugin = require('write-file-webpack-plugin')
 
+var alias = require('./config').alias
 var env = require('./utils').env
-var fileExtensions = require('./config').fileExtensions
 var htmlMinifyOptions = require('./config').htmlMinifyOptions
+var regex = require('./config').regex
 var resolvePath = require('./utils').resolvePath
-
-// The curret application directory.
-var applicationDirectory = resolvePath('src')
-// Establish the src alias and prepare to load the secrets.
-var alias = {
-  // Set our alias references for more explicit imports.
-  '@': applicationDirectory
-}
-// Grab the path to the secrets (if they exist).
-var secretsPath = resolvePath('secrets.' + env.NODE_ENV + '.js')
-// Create a webpack alias to more easily reference the secrets.
-if (fileSystem.existsSync(secretsPath)) {
-  alias['secrets'] = secretsPath
-}
+var stats = require('./config').stats
 
 module.exports = {
-  context: applicationDirectory,
+  context: resolvePath('src'),
   devtool:
     env.NODE_ENV === 'development'
       ? 'cheap-module-eval-source-map'
-      : 'source-map',
+      : '#source-map',
   entry: {
-    background: resolvePath('src/js/background.js'),
-    options: resolvePath('src/js/options.js'),
-    popup: resolvePath('src/js/popup.js')
+    background: [resolvePath('src/js/background.js')],
+    options: [resolvePath('src/js/options.js')],
+    popup: [resolvePath('src/js/popup.js')]
   },
   output: {
-    path: path.join(__dirname, 'build'),
+    path: resolvePath('build'),
     filename: '[name].bundle.js'
   },
   module: {
     rules: [
       {
         test: regex.css,
+        include: resolvePath('src'),
         exclude: regex.nodeModules,
         use: [
           'style-loader',
@@ -73,7 +61,11 @@ module.exports = {
     ]
   },
   resolve: {
-    alias: alias
+    alias: alias,
+    descriptionFiles: ['package.json'],
+    enforceExtension: false,
+    enforceModuleExtension: false,
+    extensions: ['.js', '.json']
   },
   plugins: [
     // Expose and write the allowed env vars within the compiled bundle.
@@ -102,7 +94,8 @@ module.exports = {
       title: 'Tracker Stripper - Background'
     }),
     new WriteFilePlugin()
-  ]
+  ],
+  stats: stats
 }
 
 // module.exports = options

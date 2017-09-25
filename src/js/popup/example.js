@@ -1,3 +1,5 @@
 export default function() {
-  alert('hello! (find me on src/js/popup/example.js)')
+  alert(
+    'Hello! Find me within the file: /path/to/tracker-stripper/src/js/popup/example.js'
+  )
 }

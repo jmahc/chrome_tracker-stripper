@@ -1,5 +1,6 @@
-chrome.contextMenus.create({
-  title: 'Search in UrbanDictionary',
-  contexts: ['selection'], // ContextType
-  onclick: searchUrbanDict // A callback function
-})
+// TODO
+// chrome.contextMenus.create({
+//   title: 'Search in UrbanDictionary',
+//   contexts: ['selection'], // ContextType
+//   onclick: searchUrbanDict // A callback function
+// })
