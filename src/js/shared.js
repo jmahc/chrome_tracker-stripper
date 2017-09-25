@@ -10,7 +10,7 @@ const style = `${css.position} ${css.size} ${css.visibility}`
 const createChildElement = myValue => {
   const inputValue =
     myValue === '' || myValue === null || myValue === undefined ? '' : myValue
-  return `<input type="text" id="${childId}" value="${inputValue}"></input>`
+  return `<input type="text" id="${childId}" value="${inputValue}">${inputValue}</input>`
 }
 
 export default {

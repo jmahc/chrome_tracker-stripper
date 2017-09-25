@@ -10,12 +10,12 @@ const handleBackgroundData = data => {
 
   // Check if the element has already been inserted via the GUID.
   if (parentNode !== null && parentNode !== undefined) {
-    elementUtils.removeElement(parentNodeId)
+    config.removeElement(parentNodeId)
   }
 
   // Create the element and append it to the DOM's <body> tag.
   const el = config.createElement(data)
-  elementUtils.appendElement(el)
+  config.appendElement(el)
 
   // Ensure that the child node exists & was properly inserted.
   let childNode = document.getElementById(childNodeId)
@@ -44,14 +44,11 @@ const handleBackgroundData = data => {
 
 // Message receives from the background process.
 chrome.extension.onMessage.addListener((request, sender, sendResponse) => {
-  console.log('chrome.ext.onMsg.addListen hit in - contentScript.js')
   if (request.method === config.listenMethod) {
     console.log('Background message received. Request data: ')
     console.info(request.data)
+    handleBackgroundData(request.data)
 
-    // alert(request.data)
-    // handleBackgroundData(request.data)
-    // sendResponse({data: document.getElementById('header').innerHTML});
     // Do nothing...
     sendResponse({})
   } else {
