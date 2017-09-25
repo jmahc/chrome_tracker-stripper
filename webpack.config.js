@@ -18,6 +18,7 @@ module.exports = {
       : '#source-map',
   entry: {
     background: [resolvePath('src/js/background.js')],
+    contentScript: [resolvePath('src/js/contentScript.js')],
     options: [resolvePath('src/js/options.js')],
     popup: [resolvePath('src/js/popup.js')]
   },
@@ -58,6 +59,24 @@ module.exports = {
         exclude: regex.pkg,
         use: ['html-loader']
       }
+      // PACKAGE.JSON
+      // 
+      // "babel-loader": "",
+      // "babel-preset-env": "",
+      // "babel-preset-es2015": "",
+      //
+      // ,
+      // {
+      //   test: regex.js,
+      //   include: [resolvePath('src/js/contentScript.js')],
+      //   exclude: regex.npm,
+      //   use: {
+      //     loader: 'babel-loader',
+      //     options: {
+      //       presets: ['env']
+      //     }
+      //   }
+      // }
     ]
   },
   resolve: {
