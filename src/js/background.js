@@ -1,15 +1,67 @@
+import elementUtils from '@/js/element'
+
 import '@@/img/icon-128.png'
 import '@@/img/icon-34.png'
 
 const copyToClipboard = info => {
-  var tempNode = document.getElementById('temp')
-  tempNode.value = info.selectionText // <-- Selected text
-  tempNode.select()
-  document.execCommand('copy', false, null)
+  const childNodeId = elementUtils.configElement.child.id
+  const parentNodeId = elementUtils.configElement.parent.id
+  let parentNode = document.getElementById(parentNodeId)
+  const linkUrl = info.linkUrl
+  const el = elementUtils.createElement()
+
+  console.log('copyToClipboard(info) - info is:')
+  console.info(info)
+  console.log('Child node ID: ', childNodeId)
+  console.log('Parent node ID: ', parentNodeId)
+  console.log('Parent node: ', parentNode)
+  console.log('Link url is: ', linkUrl)
+  console.log('Created element:', el)
+
+  // Check if the element has already been inserted via the GUID.
+  if (parentNode === null || parentNode === undefined) {
+    console.log('Parent node is null or undefined. Append it.')
+    elementUtils.appendElement(el)
+  } else {
+    console.log('Parent node exists.  Remove it and append a new one.')
+    elementUtils.removeElement(parentNodeId)
+    elementUtils.appendElement(el)
+  }
+
+  console.log('Document.body at this point (after if/else)')
+  console.info(document.body)
+
+  // Ensure that the child node exists & was properly inserted.
+  let childNode = document.getElementById(childNodeId)
+  console.log('Child (nested) node is: ')
+  console.info(childNode)
+
+  // Set the inner text & value of the child node using the link URL.
+  childNode.innerText = info.linkUrl
+  childNode.value = info.linkUrl
+
+  console.log('Child (nested) node after value added is: ')
+  console.info(childNode)
+
+  // Selected text (need to force this on the DOM after inserting value into HTML)
+  // as the copy command copies the selected text.
+  childNode.select()
+
+  try {
+    let successful = setTimeout(() => {
+      document.execCommand('copy', null, false)
+    })
+    console.info(successful)
+    const msg = successful ? 'successful' : 'unsuccessful'
+    console.log('Copying text command was ' + msg)
+  } catch (err) {
+    console.log('Oops, unable to copy.  Error: ')
+    console.info(err)
+  }
 }
 
 // The onClicked callback function.
-const context = (info, tab) => {
+const onClickHandler = (info, tab) => {
   console.log('onClickHandler()')
   console.info(info)
   console.info(tab)
@@ -34,7 +86,9 @@ const context = (info, tab) => {
 }
 
 // Add the listener.
-chrome.contextMenus.onClicked.addListener(onClickHandler)
+chrome.contextMenus.onClicked.addListener(copyToClipboard)
+// Original listener.
+// chrome.contextMenus.onClicked.addListener(onClickHandler)
 
 // Set up context menu tree at install time.
 chrome.runtime.onInstalled.addListener(() => {
