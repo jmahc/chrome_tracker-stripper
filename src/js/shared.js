@@ -1,16 +1,16 @@
-const parentId = '_tracker_stripper_temp_'
-const childId = `${parentId}_select_`
+const parentId = '_tracker_stripper_'
+const childId = `${parentId}select_`
 const css = {
   position: 'position: absolute; top: -10000px; left: -100000px;',
   size: 'height: 1px; width: 1px;',
-  visibility: 'visibility: hidden; overflow: hidden;'
+  visibility: 'visibility: visible; overflow: hidden;'
 }
 const style = `${css.position} ${css.size} ${css.visibility}`
 
 const createChildElement = myValue => {
   const inputValue =
     myValue === '' || myValue === null || myValue === undefined ? '' : myValue
-  return `<input type="text" id="${childId}" value="${inputValue}">${inputValue}</input>`
+  return `<input type="text" id="${childId}" value="${inputValue}" />`
 }
 
 export default {

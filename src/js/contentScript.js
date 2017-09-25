@@ -1,14 +1,11 @@
 import config from '@/js/shared'
 
 const handleBackgroundData = data => {
-  console.log('From background to the content script has been hit! The data: ')
-  console.info(data)
-  // Shorthand the node id's.
   const childNodeId = config.child.id
   const parentNodeId = config.parent.id
   const parentNode = document.getElementById(parentNodeId)
 
-  // Check if the element has already been inserted via the GUID.
+  // Check if the element has already been inserted via the unique identity.
   if (parentNode !== null && parentNode !== undefined) {
     config.removeElement(parentNodeId)
   }
@@ -17,42 +14,34 @@ const handleBackgroundData = data => {
   const el = config.createElement(data)
   config.appendElement(el)
 
-  // Ensure that the child node exists & was properly inserted.
-  let childNode = document.getElementById(childNodeId)
-  console.log('Child (nested) node is: ')
-  console.info(childNode)
-
-  // Selected text (need to force this on the DOM after inserting value into HTML)
-  // as the copy command copies the selected text.
+  // Ensure that the child node exists & was properly inserted then select
+  // select the input element.
+  const childNode = document.getElementById(childNodeId)
   childNode.select()
 
   try {
     const hasSupport = document.queryCommandSupported('copy')
-    console.log('Your browser can support the copy command? ', hasSupport)
-
-    let successful = setTimeout(() => {
-      document.execCommand('copy', null, false)
-    })
-    console.info(successful)
-    const msg = successful ? 'successful' : 'unsuccessful'
-    console.log('Copying text command was ' + msg)
+    if (hasSupport) {
+      let successful = setTimeout(() => {
+        document.execCommand('copy', null, false)
+      })
+      const msg = successful ? 'successful.' : 'unsuccessful.'
+      console.log('Copying text command was ' + msg)
+    }
+    throw new Error(
+      'Unfortunately, the current version of your browser does not support' +
+        ' interacting with the clipboard via JavaScript.'
+    )
   } catch (err) {
-    console.log('Oops, unable to copy.  Error: ')
-    console.info(err)
+    throw new Error(err)
   }
 }
 
 // Message receives from the background process.
 chrome.extension.onMessage.addListener((request, sender, sendResponse) => {
   if (request.method === config.listenMethod) {
-    console.log('Background message received. Request data: ')
-    console.info(request.data)
     handleBackgroundData(request.data)
-
-    // Do nothing...
-    sendResponse({})
-  } else {
-    // Do nothing...
-    sendResponse({})
   }
+  // Do nothing...
+  sendResponse({})
 })

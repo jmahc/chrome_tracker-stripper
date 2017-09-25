@@ -17,8 +17,6 @@ const onClickHandler = info => {
     return null
   }
 
-  console.log('background.js is passing data.');
-
   // We first need to find the active tab and window and then send
   // the data along to the contentScripts, which has access to the DOM.
   // This is based on:

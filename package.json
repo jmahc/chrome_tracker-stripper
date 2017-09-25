@@ -1,6 +1,6 @@
 {
   "name": "tracker-stripper",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Right-clicking torrent links will remove any trackers appended to the magnet link.",
   "scripts": {
     "build": "rm -rf build/ && node utils/build.js",
